@@ -471,7 +471,7 @@
             <div class="answer-feedback" id="feedback-38"></div>
         </div>
         <div class="question">
-            <p>２．<ruby>歌<rt>うた</rt></ruby>を<ruby>歌<rt>うた</rt></ruby>います。</p>
+            <p>２．<ruby>音楽<rt>おんがく</rt></ruby>を<ruby>歌<rt>うた</rt></ruby>います。</p>
             <input type="text" class="answer-input" id="q39" placeholder="「〜ことができます」を入力">
             <div class="answer-feedback" id="feedback-39"></div>
         </div>
@@ -505,7 +505,7 @@
             <div class="answer-feedback" id="feedback-43"></div>
         </div>
         <div class="question">
-            <p>２．<ruby>歌<rt>うた</rt></ruby>を<ruby>歌<rt>うた</rt></ruby>います。</p>
+            <p>２．<ruby>音楽<rt>おんがく</rt></ruby>を<ruby>歌<rt>うた</rt></ruby>います。</p>
             <input type="text" class="answer-input" id="q44" placeholder="「〜と思います」を入力">
             <div class="answer-feedback" id="feedback-44"></div>
         </div>
@@ -539,7 +539,7 @@
             <div class="answer-feedback" id="feedback-48"></div>
         </div>
         <div class="question">
-            <p>２．<ruby>歌<rt>うた</rt></ruby>を<ruby>歌<rt>うた</rt></ruby>います。</p>
+            <p>２．<ruby>音楽<rt>おんがく</rt></ruby>を<ruby>歌<rt>うた</rt></ruby>います。</p>
             <input type="text" class="answer-input" id="q49" placeholder="「〜と言います」を入力">
             <div class="answer-feedback" id="feedback-49"></div>
         </div>
@@ -619,9 +619,10 @@
 
         // Initialize Firebase
         function initializeFirebase() {
+            const messageDiv = document.getElementById('message-result');
             if (!appLoaded || !firestoreLoaded || typeof firebase === 'undefined' || typeof firebase.firestore !== 'function') {
                 console.error('Firebase SDK or Firestore not loaded');
-                document.getElementById('message-result').textContent = 'エラー: Firebase SDKまたはFirestoreをロードできませんでした。';
+                messageDiv.textContent = 'エラー: Firebase SDKまたはFirestoreをロードできませんでした。ネットワーク接続を確認してください。';
                 return;
             }
 
@@ -636,8 +637,16 @@
                 measurementId: "G-DC055090BW"
             };
 
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
+            try {
+                // Initialize Firebase
+                firebase.initializeApp(firebaseConfig);
+                console.log('Firebase initialized successfully');
+            } catch (error) {
+                console.error('Firebase initialization error:', error);
+                messageDiv.textContent = 'エラー: Firebaseの初期化に失敗しました。設定を確認してください。';
+                return;
+            }
+
             const db = firebase.firestore();
 
             // Save test result to Firestore
@@ -647,7 +656,7 @@
                     console.log("startTime was null, set to: ", startTime);
                 }
                 try {
-                    await db.collection('testHistoryJishokei').add({
+                    await db.collection('testHistoryjishokeirenshuu').add({
                         name: name,
                         class: className,
                         date: date,
@@ -661,8 +670,8 @@
                     });
                     console.log('Test result saved successfully');
                 } catch (error) {
-                    console.error('Error saving test result: ', error);
-                    document.getElementById('message-result').textContent = 'Firestoreに結果を保存中にエラーが発生しました。';
+                    console.error('Error saving test result:', error.code, error.message);
+                    messageDiv.textContent = `エラー: Firestoreへの結果保存に失敗しました。エラーコード: ${error.code || '不明'}`;
                 }
             }
 
@@ -767,58 +776,58 @@
 
             // Answer key for all questions
             const answerKey = {
-                1: "かう",
-                2: "うたう",
-                3: "つかう",
-                4: "いく",
-                5: "かく",
-                6: "ひく",
-                7: "およぐ",
-                8: "いそぐ",
-                9: "はなす",
-                10: "だす",
-                11: "たつ",
-                12: "まつ",
-                13: "あそぶ",
-                14: "よぶ",
-                15: "やすむ",
-                16: "のむ",
-                17: "かえる",
-                18: "おくる",
-                19: "とる",
-                20: "つくる",
-                21: "たべる",
-                22: "ねる",
-                23: "あつめる",
-                24: "はじめる",
-                25: "みせる",
-                26: "みる",
+                1: "買う",
+                2: "歌う",
+                3: "使う",
+                4: "行く",
+                5: "書く",
+                6: "弾く",
+                7: "泳ぐ",
+                8: "急ぐ",
+                9: "話す",
+                10: "出す",
+                11: "立つ",
+                12: "待つ",
+                13: "遊ぶ",
+                14: "呼ぶ",
+                15: "休む",
+                16: "飲む",
+                17: "帰る",
+                18: "送る",
+                19: "撮る",
+                20: "作る",
+                21: "食べる",
+                22: "寝る",
+                23: "集める",
+                24: "始める",
+                25: "見せる",
+                26: "見る",
                 27: "いる",
-                28: "おきる",
-                29: "かりる",
-                30: "あびる",
+                28: "起きる",
+                29: "借りる",
+                30: "浴びる",
                 31: "できる",
                 32: "する",
-                33: "べんきょうする",
-                34: "うんてんする",
-                35: "よやくする",
-                36: "くる",
-                37: "もってくる",
-                38: "ほんをよむことができます。",
-                39: "うたをうたうことができます。",
+                33: "勉強する",
+                34: "運転する",
+                35: "予約する",
+                36: "来る",
+                37: "持ってくる",
+                38: "本を読むことができます。",
+                39: "音楽を歌うことができます。",
                 40: "プールで泳ぐことができます。",
-                41: "にほんごをべんきょうすることができます。",
-                42: "くるまをうんてんすることができます。",
-                43: "ほんをよむとおもいます。",
-                44: "うたをうたうとおもいます。",
-                45: "プールでおよぐとおもいます。",
-                46: "にほんごをべんきょうするとおもいます。",
-                47: "くるまをうんてんするとおもいます。",
-                48: "ほんをよむといいます。",
-                49: "うたをうたうといいます。",
-                50: "プールでおよぐといいます。",
-                51: "にほんごをべんきょうするといいます。",
-                52: "くるまをうんてんするといいます。"
+                41: "日本語を勉強することができます。",
+                42: "車を運転することができます。",
+                43: "本を読むと思います。",
+                44: "音楽を歌うと思います。",
+                45: "プールで泳ぐと思います。",
+                46: "日本語を勉強すると思います。",
+                47: "車を運転すると思います。",
+                48: "本を読むと言います。",
+                49: "音楽を歌うと言います。",
+                50: "プールで泳ぐと言います。",
+                51: "日本語を勉強すると言います。",
+                52: "車を運転すると言います。"
             };
 
             // Show password modal
@@ -917,17 +926,18 @@
             window.onload = function() {
                 setTimeout(() => {
                     if (!appLoaded || !firestoreLoaded) {
-                        document.getElementById('message-result').textContent = 'Firebase SDKの読み込みに失敗しました。';
+                        console.error('Firebase SDK failed to load within 10 seconds');
+                        messageDiv.textContent = 'エラー: Firebase SDKの読み込みに失敗しました。ネットワーク接続またはCDNを確認してください。';
                     } else {
                         initializeFirebase();
                     }
-                }, 5000);
+                }, 10000);
             };
         }
     </script>
 
     <!-- Firebase SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/firebase@9.22.0/firebase-app-compat.js" onload="firebaseAppLoaded()"></script>
-    <script src="https://cdn.jsdelivr.net/npm/firebase@9.22.0/firebase-firestore-compat.js" onload="firebaseFirestoreLoaded()"></script>
+    <script src="https://cdn.jsdelivr.net/npm/firebase@9.22.0/firebase-app-compat.js" onload="firebaseAppLoaded()" onerror="console.error('Failed to load Firebase App SDK');"></script>
+    <script src="https://cdn.jsdelivr.net/npm/firebase@9.22.0/firebase-firestore-compat.js" onload="firebaseFirestoreLoaded()" onerror="console.error('Failed to load Firebase Firestore SDK');"></script>
 </body>
 </html>
